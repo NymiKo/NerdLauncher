@@ -2,9 +2,11 @@ package com.easyprog.android.nerdlauncher.adapter
 
 import android.content.Intent
 import android.content.pm.ResolveInfo
+import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.easyprog.android.nerdlauncher.R
@@ -13,7 +15,7 @@ class ActivityAdapter(val activities: List<ResolveInfo>) : RecyclerView.Adapter<
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActivityHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false)
+        val view = layoutInflater.inflate(R.layout.item_activity, parent, false)
         return ActivityHolder(view)
     }
 
@@ -25,18 +27,24 @@ class ActivityAdapter(val activities: List<ResolveInfo>) : RecyclerView.Adapter<
     override fun getItemCount(): Int = activities.size
 
     class ActivityHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        private val nameTextView = itemView as TextView
+        private lateinit var nameActivityTextView: TextView
+        private lateinit var iconActivityImageView: ImageView
         private lateinit var resolveInfo: ResolveInfo
 
         init {
-            nameTextView.setOnClickListener(this)
+            itemView.setOnClickListener(this)
         }
 
         fun bindActivity(resolveInfo: ResolveInfo) {
+            nameActivityTextView = itemView.findViewById(R.id.text_name_activity)
+            iconActivityImageView = itemView.findViewById(R.id.image_icon_activity)
+
             this.resolveInfo = resolveInfo
             val packageManager = itemView.context.packageManager
             val appName = resolveInfo.loadLabel(packageManager).toString()
-            nameTextView.text = appName
+            val appIcon = resolveInfo.loadIcon(packageManager)
+            nameActivityTextView.text = appName
+            iconActivityImageView.setImageDrawable(appIcon)
         }
 
         override fun onClick(v: View) {
